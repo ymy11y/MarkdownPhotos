@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+  <constants>
+  </constants>
+  <classes>
+	<class id="lnktroublesourceToTicket" _delta="define">
+	  <parent>cmdbAbstractObject</parent>
+	  <properties>
+		<comment/>
+		<is_link>1</is_link>
+		<abstract>false</abstract>
+		<key_type>autoincrement</key_type>
+		<db_table>lnktroublesourcetoticket</db_table>
+		<db_key_field>id</db_key_field>
+		<db_final_class_field>finalclass</db_final_class_field>	
+		<reconciliation>
+		  <attributes>
+			<attribute id="ticket_id"/>
+			<attribute id="troublesource_id"/>
+		  </attributes>
+		</reconciliation>
+	  </properties>
+	  <fields>
+		<field id="ticket_id" xsi:type="AttributeExternalKey">
+		  <sql>ticket_id</sql>
+		  <target_class>Ticket</target_class>
+		  <is_null_allowed>false</is_null_allowed>
+		  <on_target_delete>DEL_AUTO</on_target_delete>
+		</field>
+		<field id="troublesource_id" xsi:type="AttributeExternalKey">
+		  <sql>troublesource_id</sql>
+		  <target_class>troublesource</target_class>
+		  <is_null_allowed>false</is_null_allowed>
+		  <on_target_delete>DEL_AUTO</on_target_delete>
+		</field>
+		<!--
+		<field id="troubleprod" xsi:type="AttributeExternalField">		  
+		  <extkey_attcode>troublesource_id</extkey_attcode>
+          <target_attcode>name</target_attcode>
+		  <is_null_allowed>true</is_null_allowed>
+		</field>
+		-->
+		<field id="troublereasonlevel1" xsi:type="AttributeExternalField">
+		  <extkey_attcode>troublesource_id</extkey_attcode>
+          <target_attcode>troublereasonlevel1</target_attcode>
+		  <is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="troublereasonlevel2" xsi:type="AttributeExternalField">
+		  <extkey_attcode>troublesource_id</extkey_attcode>
+          <target_attcode>troublereasonlevel2</target_attcode>
+		  <is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="reasontype" xsi:type="AttributeEnum">
+		  <values>
+			<value id="primary">主要原因</value>
+			<value id="secondary">次要原因</value>
+		  </values>
+		  <sql>reasontype</sql>
+		  <default_value>次要原因</default_value>
+		  <is_null_allowed>false</is_null_allowed>
+		  <display_style>list</display_style>
+		</field>
+	  </fields>
+	  <methods/>
+	  <presentation>
+		<details>
+		  <items>
+			<item id="ticket_id">
+			  <rank>10</rank>
+			</item>
+			<item id="troublesource_id">
+			  <rank>20</rank>
+			</item>
+		
+			<item id="troublereasonlevel1">
+			  <rank>40</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>50</rank>
+			</item>
+			<item id="reasontype">
+			  <rank>60</rank>
+			</item>
+		  </items>
+		</details>
+		<search>
+		  <items>
+			<item id="ticket_id">
+			  <rank>10</rank>
+			</item>
+			<item id="troublesource_id">
+			  <rank>20</rank>
+			</item>
+
+			<item id="troublereasonlevel1">
+			  <rank>40</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>50</rank>
+			</item>
+			<item id="reasontype">
+			  <rank>60</rank>
+			</item>
+			
+		  </items>
+		</search>
+		<list>
+		  <items>
+			<item id="ticket_id">
+			  <rank>10</rank>
+			</item>
+			<item id="troublesource_id">
+			  <rank>20</rank>
+			</item>
+
+			<item id="troublereasonlevel1">
+			  <rank>40</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>50</rank>
+			</item>
+			<item id="reasontype">
+			  <rank>60</rank>
+			</item>
+			
+		  </items>
+		</list>
+	  </presentation>
+	 </class>
+  </classes>
+  <menus>
+  </menus>
+  <user_rights>
+    <groups>
+    </groups>
+    <profiles>
+    </profiles>
+  </user_rights>
+</itop_design>
