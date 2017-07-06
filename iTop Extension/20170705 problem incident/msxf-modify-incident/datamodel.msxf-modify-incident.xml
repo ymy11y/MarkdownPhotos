@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+  <constants>
+  </constants>
+  <classes>
+	<class id="Incident">
+	    <fields>
+		<field id="troubleprod" xsi:type="AttributeEnum" _delta="define">
+			<always_load_in_tables>true</always_load_in_tables>
+			<values>
+            <value id="1ops">1ops</value>
+            <value id="2posloan">2posloan</value>
+            <value id="3cachloan">3cachloan</value>
+            <value id="4vcard">4vcard</value>
+            <value id="5publicplatform">5publicplatform</value>
+            <value id="6dataplatform">6dataplatform</value>
+            <value id="7riskcontrol">7riskcontrol</value>
+			<value id="8ccsaccount">8ccsaccount</value>
+			<value id="9ggsaccount">9ggsaccount</value>
+			<value id="10activity">10activity</value>
+			<value id="11publicframework">11publicframework</value>
+			<value id="12callcenter">12callcenter</value>
+			<value id="13crmsystem">13crmsystem</value>
+			</values>
+			<sql>troubleprod</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="troublereasonlevel1" xsi:type="AttributeEnum" _delta="define">
+			<always_load_in_tables>true</always_load_in_tables>
+			<values>
+				<value id="1ops_infra">1ops_infra</value>
+				<value id="2ops_business">2ops_business</value>
+				<value id="3app_dev">3app_dev</value>
+				<value id="4app_test">4app_test</value>
+				<value id="5rulemodel">5rulemodel</value>
+				<value id="6thirdparty">6thirdparty</value>
+			</values>
+			<sql>troublereasonlevel1</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="troublereasonlevel2" xsi:type="AttributeEnum" _delta="define">
+			<always_load_in_tables>true</always_load_in_tables>
+			<values>
+				<value id="1humanerror">1humanerror</value>
+				<value id="2infra">2infra</value>
+				<value id="3external">3external</value>
+				<value id="4hardware">4hardware</value>
+				<value id="5performance">5performance</value>
+				<value id="6configuration">6configuration</value>
+				<value id="7bug">7bug</value>
+				<value id="8dataprocess">8dataprocess</value>
+			</values>
+			<sql>troublereasonlevel2</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="impactprod" xsi:type="AttributeString" _delta="define">
+			<sql>impactprod</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="amountoflose" xsi:type="AttributeString" _delta="define">
+			<sql>amountoflose</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="reasonanalysis" xsi:type="AttributeText" _delta="define">
+			<sql>reasonanalysis</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="service_id" xsi:type="AttributeExternalKey" _delta="redefine">
+          <filter><![CDATA[SELECT Service AS s JOIN lnkCustomerContractToService AS l1 ON l1.service_id=s.id JOIN CustomerContract AS cc ON l1.customercontract_id=cc.id WHERE cc.org_id = :this->org_id AND s.status != 'obsolete' AND s.name LIKE 'I%']]></filter>
+          <dependencies>
+            <attribute id="org_id"/>
+          </dependencies>
+          <sql>service_id</sql>
+          <target_class>Service</target_class>
+          <is_null_allowed>true</is_null_allowed>
+          <on_target_delete>DEL_MANUAL</on_target_delete>
+          <allow_target_creation>false</allow_target_creation>
+        </field>
+		<field id="servicesubcategory_id" xsi:type="AttributeExternalKey" _delta="redefine">
+          <filter><![CDATA[SELECT ServiceSubcategory WHERE service_id = :this->service_id AND request_type = 'incident' AND status != 'obsolete']]></filter>
+          <dependencies>
+            <attribute id="service_id"/>
+          </dependencies>
+          <sql>servicesubcategory_id</sql>
+          <target_class>ServiceSubcategory</target_class>
+          <is_null_allowed>true</is_null_allowed>
+          <on_target_delete>DEL_MANUAL</on_target_delete>
+          <allow_target_creation>false</allow_target_creation>
+        </field>
+		<field id="service3rdlevelcategory_id" xsi:type="AttributeExternalKey" _delta="define">
+			  <sql>service3rdlevelcategory_id</sql>
+			  <filter><![CDATA[SELECT service3rdlevelcategory WHERE servicesubcategory_id =:this->servicesubcategory_id AND status !='obsolete']]></filter>
+			  <dependencies>
+				<attribute id="servicesubcategory_id"/>
+			  </dependencies>
+			  <target_class>service3rdlevelcategory</target_class>
+			  <is_null_allowed>true</is_null_allowed>
+			  <on_target_delete>DEL_MANUAL</on_target_delete>
+			  <allow_target_creation>false</allow_target_creation>
+			  <jointype/>
+		</field>
+		<field id="impactstart_date" xsi:type="AttributeDateTime" _delta="define">
+          <sql>impactstart_date</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+        </field>
+		<field id="impactstop_date" xsi:type="AttributeDateTime" _delta="define">
+          <sql>impactstop_date</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+        </field>
+		<field id="issuehappen_date" xsi:type="AttributeDateTime" _delta="define">
+          <sql>issuehappen_date</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+        </field>
+		<field id="troublesource_list" xsi:type="AttributeLinkedSet" _delta="define">
+          <linked_class>lnktroublesourceToIncident</linked_class>
+          <ext_key_to_me>ticket_id</ext_key_to_me>
+          <!-- <edit_mode>add_remove</edit_mode> -->
+          <count_min>0</count_min>
+          <count_max>0</count_max>
+        </field>
+		</fields>
+		<lifecycle>
+			<states>
+				<state id="resolved" _delta="redefine">
+				<highlight>
+				  <code>closed</code>
+				</highlight>
+				<inherit_flags_from>assigned</inherit_flags_from>
+				<flags>
+				  <attribute id="caller_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="origin">
+					<read_only/>
+				  </attribute>
+				  <attribute id="private_log"/>
+				  <attribute id="impact">
+					<read_only/>
+				  </attribute>
+				  <attribute id="urgency">
+					<read_only/>
+				  </attribute>
+				  <attribute id="service_id">
+					<mandatory/>
+					<must_prompt/>
+				  </attribute>
+				  <attribute id="servicesubcategory_id">
+					<must_prompt/>
+				  </attribute>
+				  <attribute id="escalation_flag">
+					<read_only/>
+				  </attribute>
+				  <attribute id="escalation_reason">
+					<read_only/>
+				  </attribute>
+				  <attribute id="parent_incident_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="parent_change_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="parent_problem_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="title">
+					<read_only/>
+				  </attribute>
+				  <attribute id="description">
+					<read_only/>
+				  </attribute>
+				  <attribute id="org_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="team_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="agent_id">
+					<read_only/>
+				  </attribute>
+				  <attribute id="resolution_date">
+					<read_only/>
+				  </attribute>
+				  <attribute id="time_spent">
+					<read_only/>
+				  </attribute>
+				  <attribute id="resolution_code">
+					<read_only/>
+				  </attribute>
+				  <attribute id="service3rdlevelcategory_id">
+					<mandatory/>
+					<must_prompt/>
+				  </attribute>
+				  <attribute id="solution">
+					<mandatory/>
+					<must_prompt/>
+				  </attribute>
+				  <attribute id="pending_reason">
+					<read_only/>
+				  </attribute>
+				  <attribute id="sla_ttr_passed">
+					<read_only/>
+				  </attribute>
+				  <attribute id="ttr_escalation_deadline">
+					<hidden/>
+				  </attribute>
+				  <attribute id="sla_ttr_over">
+					<read_only/>
+				  </attribute>
+				</flags>
+				<transitions>
+				  <transition id="ev_close">
+					<target>closed</target>
+					<actions>
+					  <action>
+						<verb>SetCurrentDate</verb>
+						<params>
+						  <param xsi:type="attcode">close_date</param>
+						</params>
+					  </action>
+					</actions>
+				  </transition>
+				  <transition id="ev_reopen">
+					<target>assigned</target>
+					<actions>
+					</actions>
+				  </transition>
+				  <transition id="ev_autoresolve">
+					<target>resolved</target>
+					<actions>
+					  <action>
+						<verb>SetCurrentDate</verb>
+						<params>
+						  <param xsi:type="attcode">resolution_date</param>
+						</params>
+					  </action>
+					  <action>
+						<verb>SetElapsedTime</verb>
+						<params>
+						  <param xsi:type="attcode">time_spent</param>
+						  <param xsi:type="attcode">start_date</param>
+						  <param xsi:type="string">DefaultWorkingTimeComputer</param>
+						</params>
+					  </action>
+					  <action>
+						<verb>ResolveChildTickets</verb>
+						<params/>
+					  </action>
+					</actions>
+				  </transition>
+				</transitions>
+			  </state>
+			</states>
+		</lifecycle>
+		<presentation>
+		  <details _delta="redefine">
+          <items>
+            <item id="functionalcis_list">
+              <rank>10</rank>
+            </item>
+            <item id="contacts_list">
+              <rank>20</rank>
+            </item>
+            <item id="child_incidents_list">
+              <rank>30</rank>
+            </item>
+            <item id="related_request_list">
+              <rank>40</rank>
+            </item>
+            <item id="workorders_list">
+              <rank>50</rank>
+            </item>
+			<item id="troublesource_list">
+			  <rank>60</rank>
+			</item>
+            <item id="col:col1">
+              <rank>60</rank>
+              <items>
+                <item id="fieldset:Ticket:baseinfo">
+                  <rank>10</rank>
+                  <items>
+                    <item id="org_id">
+                      <rank>10</rank>
+                    </item>
+                    <item id="caller_id">
+                      <rank>20</rank>
+                    </item>
+                    <item id="status">
+                      <rank>30</rank>
+                    </item>
+                    <item id="origin">
+                      <rank>40</rank>
+                    </item>
+                    <item id="title">
+                      <rank>50</rank>
+                    </item>
+                    <item id="description">
+                      <rank>60</rank>
+                    </item>
+					<item id="amountoflose">
+                      <rank>70</rank>
+                    </item>
+					
+                  </items>
+                </item>
+                <item id="fieldset:Ticket:moreinfo">
+                  <rank>20</rank>
+                  <items>
+                    <item id="service_id">
+                      <rank>10</rank>
+                    </item>
+                    <item id="servicesubcategory_id">
+                      <rank>20</rank>
+                    </item>
+                    <item id="escalation_flag">
+                      <rank>30</rank>
+                    </item>
+                    <item id="escalation_reason">
+                      <rank>40</rank>
+                    </item>
+                    <item id="pending_reason">
+                      <rank>50</rank>
+                    </item>
+                  </items>
+                </item>
+              </items>
+            </item>
+            <item id="col:col2">
+              <rank>70</rank>
+              <items>
+                <item id="fieldset:Ticket:Type">
+                  <rank>10</rank>
+                  <items>
+                    <item id="impact">
+                      <rank>10</rank>
+                    </item>
+                    <item id="urgency">
+                      <rank>20</rank>
+                    </item>
+                    <item id="priority">
+                      <rank>30</rank>
+                    </item>
+                  </items>
+                </item>
+                <item id="fieldset:Ticket:contact">
+                  <rank>20</rank>
+                  <items>
+                    <item id="team_id">
+                      <rank>10</rank>
+                    </item>
+                    <item id="agent_id">
+                      <rank>20</rank>
+                    </item>
+                  </items>
+                </item>
+                <item id="fieldset:Ticket:date">
+                  <rank>30</rank>
+                  <items>
+                    <item id="start_date">
+                      <rank>10</rank>
+                    </item>
+                    <item id="last_update">
+                      <rank>20</rank>
+                    </item>
+                    <item id="assignment_date">
+                      <rank>30</rank>
+                    </item>
+                    <item id="tto_escalation_deadline">
+                      <rank>40</rank>
+                    </item>
+                    <item id="ttr_escalation_deadline">
+                      <rank>50</rank>
+                    </item>
+                    <item id="last_pending_date">
+                      <rank>60</rank>
+                    </item>
+                    <item id="resolution_date">
+                      <rank>70</rank>
+                    </item>
+                    <item id="close_date">
+                      <rank>80</rank>
+                    </item>
+					
+					
+					<item id="issuehappen_date">
+                      <rank>90</rank>
+                    </item>
+					<item id="impactstart_date">
+                      <rank>100</rank>
+                    </item>
+					<item id="impactstop_date">
+                      <rank>110</rank>
+                    </item>
+                  </items>
+                </item>
+              </items>
+            </item>
+            <item id="col:col3">
+              <rank>80</rank>
+              <items>
+                <item id="fieldset:Ticket:relation">
+                  <rank>10</rank>
+                  <items>
+                    <item id="parent_incident_id">
+                      <rank>10</rank>
+                    </item>
+                    <item id="parent_problem_id">
+                      <rank>20</rank>
+                    </item>
+                    <item id="parent_change_id">
+                      <rank>30</rank>
+                    </item>
+                  </items>
+                </item>
+                <item id="fieldset:Ticket:resolution">
+                  <rank>20</rank>
+                  <items>
+                    <item id="resolution_code">
+                      <rank>10</rank>
+                    </item>
+                    <item id="solution">
+                      <rank>20</rank>
+                    </item>
+                    <item id="time_spent">
+                      <rank>30</rank>
+                    </item>
+                    <item id="user_satisfaction">
+                      <rank>40</rank>
+                    </item>
+                    <item id="user_comment">
+                      <rank>50</rank>
+                    </item>
+					<item id="troubleprod">
+                      <rank>60</rank>
+                    </item>
+					
+					<item id="troublereasonlevel1">
+                      <rank>70</rank>
+                    </item>
+					<item id="troublereasonlevel2">
+                      <rank>80</rank>
+                    </item>
+					
+					<item id="impactprod">
+                      <rank>90</rank>
+                    </item>
+					<item id="reasonanalysis">
+                      <rank>100</rank>
+                    </item>
+                  </items>
+                </item>
+                <item id="fieldset:Ticket:SLA">
+                  <rank>30</rank>
+                  <items>
+                    <item id="sla_tto_passed">
+                      <rank>10</rank>
+                    </item>
+                    <item id="sla_tto_over">
+                      <rank>20</rank>
+                    </item>
+                    <item id="sla_ttr_passed">
+                      <rank>30</rank>
+                    </item>
+                    <item id="sla_ttr_over">
+                      <rank>40</rank>
+                    </item>
+                  </items>
+                </item>
+              </items>
+            </item>
+          </items>
+        </details>
+		<search  _delta="redefine">
+			<items>
+            <item id="ref">
+              <rank>10</rank>
+            </item>
+            <item id="org_id">
+              <rank>20</rank>
+            </item>
+            <item id="title">
+              <rank>30</rank>
+            </item>
+            <item id="description">
+              <rank>40</rank>
+            </item>
+            <item id="start_date">
+              <rank>50</rank>
+            </item>
+            <item id="resolution_date">
+              <rank>70</rank>
+            </item>
+            <item id="close_date">
+              <rank>80</rank>
+            </item>
+            <item id="status">
+              <rank>90</rank>
+            </item>
+            <item id="caller_id">
+              <rank>100</rank>
+            </item>
+            <item id="origin">
+              <rank>110</rank>
+            </item>
+            <item id="impact">
+              <rank>120</rank>
+            </item>
+            <item id="urgency">
+              <rank>130</rank>
+            </item>
+            <item id="priority">
+              <rank>140</rank>
+            </item>
+            <item id="service_id">
+              <rank>150</rank>
+            </item>
+            <item id="servicesubcategory_id">
+              <rank>160</rank>
+            </item>
+            <item id="team_id">
+              <rank>170</rank>
+            </item>
+            <item id="agent_id">
+              <rank>180</rank>
+            </item>
+            <item id="escalation_flag">
+              <rank>190</rank>
+            </item>
+			<!--  Bill: 6/16 hide resolution field
+            <item id="service3rdlevelcategory_id">
+              <rank>200</rank>
+            </item>
+			-->
+			
+            <item id="sla_tto_passed">
+              <rank>220</rank>
+            </item>
+            <item id="sla_ttr_passed">
+              <rank>230</rank>
+            </item>
+			<item id="troubleprod">
+			  <rank>240</rank>
+			</item>
+			<item id="troublereasonlevel1">
+			  <rank>250</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>260</rank>
+			</item>
+          </items>
+		</search>
+		</presentation>
+	</class>
+	
+	 <class id="lnktroublesourceToIncident" _delta="define">
+	  <parent>cmdbAbstractObject</parent>
+	  <properties>
+		<comment/>
+		<is_link>1</is_link>
+		<abstract>false</abstract>
+		<key_type>autoincrement</key_type>
+		<db_table>lnktroublesourcetoincident</db_table>
+		<db_key_field>id</db_key_field>
+		<db_final_class_field>finalclass</db_final_class_field>	
+		<naming>
+          <attributes>
+            <attribute id="ticket_id"/>
+          </attributes>
+        </naming>
+        <display_template/>
+        <icon>images/troublesource.png</icon>
+		<reconciliation>
+		  <attributes>
+			<attribute id="ticket_id"/>
+		  </attributes>
+		</reconciliation>
+	  </properties>
+	  <fields>
+		<field id="ticket_id" xsi:type="AttributeExternalKey">
+		  <filter><![CDATA[SELECT Incident]]></filter>
+		  <sql>ticket_id</sql>
+		  <target_class>Incident</target_class>
+		  <is_null_allowed>false</is_null_allowed>
+		  <on_target_delete>DEL_AUTO</on_target_delete>
+		</field>
+		
+		
+		<field id="priority" xsi:type="AttributeExternalField">
+		  <extkey_attcode>ticket_id</extkey_attcode>
+		  <target_attcode>priority</target_attcode>		  
+		</field>
+		
+		<field id="impactstart_date" xsi:type="AttributeExternalField">
+		  <extkey_attcode>ticket_id</extkey_attcode>
+		  <target_attcode>impactstart_date</target_attcode>		  
+		</field>
+		
+		<field id="impactstop_date" xsi:type="AttributeExternalField">
+		  <extkey_attcode>ticket_id</extkey_attcode>
+		  <target_attcode>impactstop_date</target_attcode>		  
+		</field>
+		
+		<field id="issuehappen_date" xsi:type="AttributeExternalField">
+		  <extkey_attcode>ticket_id</extkey_attcode>
+		  <target_attcode>issuehappen_date</target_attcode>		  
+		</field>
+		
+		
+		<field id="ticket_ref" xsi:type="AttributeExternalField">
+          <extkey_attcode>ticket_id</extkey_attcode>
+          <target_attcode>ref</target_attcode>
+        </field>
+		
+		<field id="troubleprod" xsi:type="AttributeEnum" _delta="define">
+			<always_load_in_tables>true</always_load_in_tables>
+			<values>
+            <value id="1ops">1ops</value>
+            <value id="2posloan">2posloan</value>
+            <value id="3cachloan">2posloan</value>
+            <value id="4vcard">4vcard</value>
+            <value id="5publicplatform">5publicplatform</value>
+            <value id="6dataplatform">6dataplatform</value>
+            <value id="7riskcontrol">7riskcontrol</value>
+			<value id="8ccsaccount">8ccsaccount</value>
+			<value id="9ggsaccount">9ggsaccount</value>
+			<value id="10activity">10activity</value>
+			<value id="11publicframework">11publicframework</value>
+			<value id="12callcenter">12callcenter</value>
+			<value id="13crmsystem">13crmsystem</value>
+			</values>
+			<sql>troubleprod</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="troublereasonlevel1" xsi:type="AttributeEnum" _delta="define">
+			<always_load_in_tables>true</always_load_in_tables>
+			<values>
+				<value id="1ops_infra">1ops_infra</value>
+				<value id="2ops_business">2ops_business</value>
+				<value id="3app_dev">3app_dev</value>
+				<value id="4app_test">4app_test</value>
+				<value id="5rulemodel">5rulemodel</value>
+				<value id="6thirdparty">6thirdparty</value>
+			</values>
+			<sql>troublereasonlevel1</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="troublereasonlevel2" xsi:type="AttributeEnum" _delta="define">
+			<always_load_in_tables>true</always_load_in_tables>
+			<values>
+				<value id="1humanerror">1humanerror</value>
+				<value id="2infra">2infra</value>
+				<value id="3external">3external</value>
+				<value id="4hardware">4hardware</value>
+				<value id="5performance">5performance</value>
+				<value id="6configuration">6configuration</value>
+				<value id="7bug">7bug</value>
+				<value id="8dataprocess">8dataprocess</value>
+			</values>
+			<sql>troublereasonlevel2</sql>
+			<default_value/>
+			<is_null_allowed>true</is_null_allowed>
+		</field>
+		<field id="reasontype" xsi:type="AttributeEnum">
+		  <values>
+			<value id="primary">primary</value>
+			<value id="secondary">secondary</value>
+		  </values>
+		  <sql>reasontype</sql>
+		  <default_value>secondary</default_value>
+		  <is_null_allowed>false</is_null_allowed>
+		  <display_style>list</display_style>
+		</field>
+	  </fields>
+	  <methods/>
+	  <presentation>
+		<details>
+		  <items>
+			<item id="ticket_id">
+			  <rank>10</rank>
+			</item>
+			<item id="troubleprod">
+			  <rank>20</rank>
+			</item>
+			
+			<item id="troublereasonlevel1">
+			  <rank>40</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>50</rank>
+			</item>
+			<item id="reasontype">
+			  <rank>60</rank>
+			</item>
+			<item id="priority">
+			  <rank>70</rank>
+			</item>
+			<item id="issuehappen_date">
+			  <rank>80</rank>
+			</item>
+			<item id="impactstart_date">
+			  <rank>90</rank>
+			</item>
+			<item id="impactstop_date">
+			  <rank>100</rank>
+			</item>
+		  </items>
+		</details>
+		<search>
+		  <items>
+			<item id="ticket_id">
+			  <rank>10</rank>
+			</item>
+			<item id="troubleprod">
+			  <rank>20</rank>
+			</item>
+	
+			<item id="troublereasonlevel1">
+			  <rank>40</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>50</rank>
+			</item>
+			<item id="reasontype">
+			  <rank>60</rank>
+			</item>
+			<item id="priority">
+			  <rank>60</rank>
+			</item>
+			<item id="impactstart_date">
+			  <rank>80</rank>
+			</item>
+			<item id="impactstop_date">
+			  <rank>90</rank>
+			</item>
+		  </items>
+		</search>
+		<list>
+		  <items>
+			<item id="ticket_id">
+			  <rank>10</rank>
+			</item>
+			<item id="troubleprod">
+			  <rank>20</rank>
+			</item>
+
+			<item id="troublereasonlevel1">
+			  <rank>40</rank>
+			</item>
+			<item id="troublereasonlevel2">
+			  <rank>50</rank>
+			</item>
+			<item id="reasontype">
+			  <rank>60</rank>
+			</item>
+			<item id="priority">
+			  <rank>70</rank>
+			</item>
+			<item id="impactstart_date">
+			  <rank>80</rank>
+			</item>
+			<item id="impactstop_date">
+			  <rank>90</rank>
+			</item>
+		  </items>
+		</list>
+	  </presentation>
+	 </class>
+	
+  </classes>
+  <menus>
+  	
+	<menu id="IncidentManagement" xsi:type="MenuGroup" _delta="redefine">
+      <rank>35</rank>
+      <enable_stimulus/>
+    </menu>
+    <menu id="Incident:Overview" xsi:type="DashboardMenuNode" _delta="redefine">
+      <rank>0</rank>
+      <parent>IncidentManagement</parent>
+      <definition>
+        <layout>DashboardLayoutTwoCols</layout>
+        <title>UI:IncidentMgmtMenuOverview:Title</title>
+        <cells>
+          <cell id="0">
+            <rank>0</rank>
+            <dashlets>
+              <dashlet id="1" xsi:type="DashletGroupByPie">
+                <title>UI-IncidentManagementOverview-IncidentByPriority-last-14-days</title>
+                <query>SELECT Incident WHERE DATE_SUB(NOW(), INTERVAL 14 DAY) &lt; start_date</query>
+                <group_by>priority</group_by>
+                <style>pie</style>
+              </dashlet>
+            </dashlets>
+          </cell>
+          <cell id="1">
+            <rank>1</rank>
+            <dashlets>
+              <dashlet id="2" xsi:type="DashletGroupByBars">
+                <title>UI-IncidentManagementOverview-Last-14-days</title>
+                <query>SELECT Incident WHERE DATE_SUB(NOW(), INTERVAL 14 DAY) &lt; start_date</query>
+                <group_by>start_date:day_of_month</group_by>
+                <style>bars</style>
+              </dashlet>
+            </dashlets>
+          </cell>
+          <cell id="2">
+            <rank>2</rank>
+            <dashlets>
+              <dashlet id="3" xsi:type="DashletGroupByTable">
+                <title>UI-IncidentManagementOverview-OpenIncidentByStatus</title>
+                <query>SELECT Incident WHERE status NOT IN ('closed','rejected')</query>
+                <group_by>status</group_by>
+                <style>table</style>
+              </dashlet>
+            </dashlets>
+          </cell>
+          <cell id="3">
+            <rank>3</rank>
+            <dashlets>
+              <dashlet id="4" xsi:type="DashletGroupByTable">
+                <title>UI-IncidentManagementOverview-OpenIncidentByAgent</title>
+                <query>SELECT Incident WHERE status NOT IN ('closed','rejected')</query>
+                <group_by>agent_id</group_by>
+                <style>table</style>
+              </dashlet>
+            </dashlets>
+          </cell>
+          <cell id="4">
+            <rank>4</rank>
+            <dashlets>
+              <dashlet id="5" xsi:type="DashletGroupByTable">
+                <title>UI-IncidentManagementOverview-OpenIncidentByCustomer</title>
+                <query>SELECT Incident WHERE status NOT IN ('closed','rejected')</query>
+                <group_by>org_id</group_by>
+                <style>table</style>
+              </dashlet>
+            </dashlets>
+          </cell>
+        </cells>
+      </definition>
+    </menu>
+    <menu id="NewIncident" xsi:type="NewObjectMenuNode" _delta="redefine">
+      <rank>1</rank>
+      <parent>IncidentManagement</parent>
+      <class>Incident</class>
+    </menu>
+    <menu id="SearchIncidents" xsi:type="SearchMenuNode" _delta="redefine">
+      <rank>2</rank>
+      <parent>IncidentManagement</parent>
+      <class>Incident</class>
+    </menu>
+    <menu id="Incident:Shortcuts" xsi:type="TemplateMenuNode" _delta="redefine">
+      <rank>3</rank>
+      <parent>IncidentManagement</parent>
+      <template_file/>
+    </menu>
+	<!--
+	<menu id="NewTroubleSource" xsi:type="NewObjectMenuNode" _delta="redefine">
+      <rank>4</rank>
+      <parent>IncidentManagement</parent>
+      <class>lnktroublesourceToTicket</class>
+    </menu>
+	-->
+	<menu id="AllTroubleSource" xsi:type="OQLMenuNode" _delta="define">
+      <rank>5</rank>
+      <parent>Incident:Shortcuts</parent>
+      <oql><![CDATA[SELECT lnktroublesourceToIncident]]></oql>
+      <do_search/>
+      <auto_reload>fast</auto_reload>
+    </menu>
+	
+    <menu id="Incident:MyIncidents" xsi:type="OQLMenuNode" _delta="redefine">
+      <rank>0</rank>
+      <parent>Incident:Shortcuts</parent>
+      <oql><![CDATA[SELECT Incident WHERE agent_id = :current_contact_id AND status NOT IN ("closed","resolved")]]></oql>
+      <do_search/>
+      <auto_reload>fast</auto_reload>
+    </menu>
+    <menu id="Incident:EscalatedIncidents" xsi:type="OQLMenuNode" _delta="redefine">
+      <rank>1</rank>
+      <parent>Incident:Shortcuts</parent>
+      <oql><![CDATA[SELECT Incident WHERE status IN ("escalated_tto", "escalated_ttr") OR escalation_flag="yes"]]></oql>
+      <do_search/>
+      <auto_reload>fast</auto_reload>
+    </menu>
+    <menu id="Incident:OpenIncidents" xsi:type="OQLMenuNode" _delta="redefine">
+      <rank>2</rank>
+      <parent>Incident:Shortcuts</parent>
+      <oql><![CDATA[SELECT Incident WHERE status NOT IN ("closed")]]></oql>
+      <do_search>1</do_search>
+      <auto_reload>fast</auto_reload>
+    </menu>
+	
+  </menus>
+  <user_rights>
+    <groups>
+    </groups>
+    <profiles>
+    </profiles>
+  </user_rights>
+</itop_design>
