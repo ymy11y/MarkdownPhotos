@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2">
+  <classes/>
+  <menus/>
+  <user_rights>
+    <groups>
+      <group id="General" _delta="redefine">
+        <classes>
+          <class id="Organization"/>
+          <class id="Location"/>
+          <class id="Contact"/>
+        </classes>
+      </group>
+      <group id="Documentation" _delta="redefine">
+        <classes>
+          <class id="Document"/>
+        </classes>
+      </group>
+      <group id="Configuration" _delta="redefine">
+        <classes>
+          <class id="Licence"/>
+          <class id="Subnet"/>
+          <class id="Patch"/>
+          <class id="Software"/>
+          <class id="FunctionalCI"/>
+          <class id="NetworkInterface"/>
+          <class id="Group"/>
+          <class id="Typology"/>
+          <class id="NASFileSystem"/>
+          <class id="LogicalVolume"/>
+          <class id="Tape"/>
+          <class id="VLAN"/>
+        </classes>
+      </group>
+      <group id="Incident" _delta="redefine">
+        <classes>
+          <class id="Incident"/>
+        </classes>
+      </group>
+      <group id="Problem" _delta="redefine">
+        <classes>
+          <class id="Problem"/>
+        </classes>
+      </group>
+      <group id="Change" _delta="redefine">
+        <classes>
+          <class id="Change"/>
+          <class id="RoutineChange"/>
+          <class id="NormalChange"/>
+          <class id="EmergencyChange"/>
+        </classes>
+      </group>
+      <group id="Service" _delta="redefine">
+        <classes>
+          <class id="Contract"/>
+          <class id="ProviderContract"/>
+          <class id="CustomerContract"/>
+          <class id="ServiceFamily"/>
+          <class id="Service"/>
+          <class id="ServiceSubcategory"/>
+          <class id="SLA"/>
+          <class id="SLT"/>
+          <class id="DeliveryModel"/>
+        </classes>
+      </group>
+      <group id="UserRequest" _delta="redefine">
+        <classes>
+          <class id="UserRequest"/>
+        </classes>
+      </group>
+      <group id="KnownError" _delta="redefine">
+        <classes>
+          <class id="KnownError"/>
+          <class id="FAQ"/>
+          <class id="FAQCategory"/>
+        </classes>
+      </group>
+      <group id="Ticketing" _delta="redefine">
+        <classes>
+          <class id="lnkFunctionalCIToTicket"/>
+          <class id="lnkContactToTicket"/>
+          <class id="WorkOrder"/>
+        </classes>
+      </group>
+      <group id="NormalChange" _delta="redefine">
+        <classes>
+          <class id="NormalChange"/>
+        </classes>
+      </group>
+      <group id="EmergencyChange" _delta="redefine">
+        <classes>
+          <class id="EmergencyChange"/>
+        </classes>
+      </group>
+      <group id="RoutineChange" _delta="redefine">
+        <classes>
+          <class id="RoutineChange"/>
+        </classes>
+      </group>
+    </groups>
+    <profiles>
+      <profile id="3" _delta="redefine">
+        <name>Configuration Manager</name>
+        <description>配置经理是修改维护CMDB配置项的人</description>
+        <groups>
+          <group id="General">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:delete">allow</action>
+            </actions>
+          </group>
+          <group id="Documentation">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:delete">allow</action>
+            </actions>
+          </group>
+          <group id="Configuration">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:delete">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="4" _delta="redefine">
+        <name>Service Desk Agent</name>
+        <description>服务台人员是负责事件单创建和更新的人</description>
+        <groups>
+          <group id="Ticketing">
+            <actions>
+              <action id="action:delete">allow</action>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="Incident">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+			  <action id="stimulus:ev_reassign">allow</action>
+			  <action id="stimulus:ev_resolve">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+			  <action id="stimulus:ev_pending">allow</action>
+            </actions>
+          </group>
+          <group id="UserRequest">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+			  <action id="stimulus:ev_reassign">allow</action>
+			  <action id="stimulus:ev_resolve">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+			  <action id="stimulus:ev_pending">allow</action>
+              <action id="stimulus:ev_wait_for_approval">allow</action>
+			  <action id="stimulus:ev_approve">allow</action>
+			  <action id="stimulus:ev_reject">allow</action>
+            </actions>
+          </group>
+		  <group id="Problem">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reassign">allow</action>
+              <action id="stimulus:ev_resolve">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="5" _delta="redefine">
+        <name>Support Agent</name>
+        <description>支持人员是分析和解决当前票单的人</description>
+        <groups>
+          <group id="Ticketing">
+            <actions>
+              <action id="action:delete">allow</action>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_close">allow</action> 
+            </actions>
+          </group>
+          <group id="Incident">
+            <actions>
+			  <action id="action:read">allow</action>
+              <action id="action:write">deny</action>
+              <action id="action:bulk write">deny</action>
+              <action id="stimulus:ev_assign">deny</action>
+              <action id="stimulus:ev_reassign">deny</action>
+              <action id="stimulus:ev_resolve">deny</action>
+              <action id="stimulus:ev_close">deny</action>
+              <action id="stimulus:ev_pending">deny</action> 
+            </actions>
+          </group>
+          <group id="UserRequest">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reassign">allow</action>
+              <action id="stimulus:ev_resolve">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+              <action id="stimulus:ev_pending">allow</action>
+              <action id="stimulus:ev_wait_for_approval">allow</action>
+			  <action id="stimulus:ev_approve">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="6" _delta="redefine">
+        <name>Problem Manager</name>
+        <description>问题经理分析和解决当前问题的人</description>
+        <groups>
+          <group id="KnownError">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:delete">allow</action>
+            </actions>
+          </group>
+          <group id="Ticketing">
+            <actions>
+              <action id="action:delete">allow</action>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="Problem">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reassign">allow</action>
+              <action id="stimulus:ev_resolve">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="7" _delta="redefine">
+        <name>Change Implementor</name>
+        <description>变更实施者是执行变更操作的人</description>
+        <groups>
+          <group id="Change">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_plan">allow</action>
+              <action id="stimulus:ev_reopen">allow</action>
+              <action id="stimulus:ev_finish">allow</action>
+            </actions>
+          </group>
+          <group id="Ticketing">
+            <actions>
+              <action id="action:delete">allow</action>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="NormalChange">
+            <actions>
+              <action id="stimulus:ev_plan">allow</action>
+              <action id="stimulus:ev_replan">allow</action>
+              <action id="stimulus:ev_implement">allow</action>
+              <action id="stimulus:ev_monitor">allow</action>
+            </actions>
+          </group>
+          <group id="EmergencyChange">
+            <actions>
+              <action id="stimulus:ev_plan">allow</action>
+              <action id="stimulus:ev_replan">allow</action>
+              <action id="stimulus:ev_implement">allow</action>
+              <action id="stimulus:ev_monitor">allow</action>
+            </actions>
+          </group>
+          <group id="RoutineChange">
+            <actions>
+              <action id="stimulus:ev_plan">allow</action>
+              <action id="stimulus:ev_replan">allow</action>
+              <action id="stimulus:ev_implement">allow</action>
+              <action id="stimulus:ev_monitor">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="8" _delta="redefine">
+        <name>Change Supervisor</name>
+        <description>变更监督者是对变更执行过程整体负责的人</description>
+        <groups>
+          <group id="Change">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reopen">allow</action>
+              <action id="stimulus:ev_finish">allow</action>
+            </actions>
+          </group>
+          <group id="Ticketing">
+            <actions>
+              <action id="action:delete">allow</action>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="NormalChange">
+            <actions>
+              <action id="stimulus:ev_validate">allow</action>
+              <action id="stimulus:ev_reject">allow</action>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reopen">allow</action>
+              <action id="stimulus:ev_finish">allow</action>
+            </actions>
+          </group>
+          <group id="EmergencyChange">
+            <actions>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reopen">allow</action>
+              <action id="stimulus:ev_finish">allow</action>
+            </actions>
+          </group>
+          <group id="RoutineChange">
+            <actions>
+              <action id="stimulus:ev_assign">allow</action>
+              <action id="stimulus:ev_reopen">allow</action>
+              <action id="stimulus:ev_finish">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="9" _delta="redefine">
+        <name>Change Approver</name>
+        <description>变更审批者是能影响变更审批的人</description>
+        <groups>
+          <group id="Change">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_approve">allow</action>
+              <action id="stimulus:ev_reject">allow</action>
+            </actions>
+          </group>
+          <group id="Ticketing">
+            <actions>
+              <action id="action:delete">allow</action>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+            </actions>
+          </group>
+          <group id="NormalChange">
+            <actions>
+              <action id="stimulus:ev_approve">allow</action>
+              <action id="stimulus:ev_notapprove">allow</action>
+            </actions>
+          </group>
+          <group id="EmergencyChange">
+            <actions>
+              <action id="stimulus:ev_approve">allow</action>
+              <action id="stimulus:ev_notapprove">allow</action>
+            </actions>
+          </group>
+          <group id="RoutineChange">
+            <actions/>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="10" _delta="redefine">
+        <name>Service Manager</name>
+        <description>服务经理是负责吧服务交付给客户(内外部)的人</description>
+        <groups>
+          <group id="Service">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:delete">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="11" _delta="redefine">
+        <name>Document author</name>
+        <description>文档作者是能贡献文档的人</description>
+        <groups>
+          <group id="Documentation">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="action:bulk write">allow</action>
+              <action id="action:delete">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="2" _delta="redefine">
+        <name>Portal user</name>
+        <description>门户用户能访问iTop门户。不具有其它任何标准应用访问权限的人，将被自动重定向到用户门户</description>
+        <groups>
+          <group id="UserRequest">
+            <actions>
+              <action id="action:write">allow</action>
+              <action id="stimulus:ev_close">allow</action>
+              <action id="stimulus:ev_reopen">allow</action>
+            </actions>
+          </group>
+          <group id="*">
+            <actions>
+              <action id="action:read">allow</action>
+              <action id="action:bulk read">allow</action>
+            </actions>
+          </group>
+        </groups>
+      </profile>
+      <profile id="12" _delta="redefine">
+        <name>Portal power user</name>
+        <description>高级门户用户是能够查看某个用户下所有票单的人。它还必须具有其它角色，如门户用户的角色</description>
+        <groups/>
+      </profile>
+    </profiles>
+  </user_rights>
+</itop_design>
