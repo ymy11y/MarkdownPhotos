@@ -1,0 +1,9 @@
+1. 文件夹上右击，git bash 登录 
+
+2. git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch PHP/邮件创建工单/邮件创建工单上线操作步骤.docx' --prune-empty --tag-name-filter cat -- --all
+
+3. git push MarkdownPhotos --force --all
+
+4 rm -rf .git/refs/original/
+  git reflog expire --expire=now --all
+  git gc --prune=now
