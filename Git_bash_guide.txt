@@ -1,0 +1,15 @@
+﻿URL为：
+http://gitlab.msxf.com/mingyi.yang/ServiceDesk.git
+
+操作步骤：
+1. 在Git文件夹上点击Git Bash，运行bash的窗口输入git add .
+   或者添加单个文件，git add test.txt
+2. 输入git commit -m "first commit"，此处first commit可以改为其他有意义的字符
+3. 运行git remote add origin http://gitlab.msxf.com/mingyi.yang/ServiceDesk.git
+   如果出错，先运行git remote rm origin，再运行一次以上命令
+4. 运行git push -u origin master
+
+如果有误加入需要删除
+1. git rm test.txt
+2. git commit -m "remove test.txt"
+3. git push -u origin master
