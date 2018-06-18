@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np  
 from datetime import datetime, timedelta
+
 basestation ="D:\\demo.xls"
 df = pd.read_excel(basestation)
 #print(data)
@@ -12,11 +13,11 @@ print('-----')
 
 #data[U'更新日期']
 print('-------')
-df[u'更新日期'] = pd.to_datetime(data[u'更新日期'], format='%Y/%m/%d')
+df[u'更新日期'] = pd.to_datetime(df[u'更新日期'], format='%Y/%m/%d')
 df[u'数量']=1     # 添加一列数量的字段，用于统计发布的数量
 #data.dtypes    # 查询数据类型
 #data[data[u'更新日期']>datetime.now()- timedelta(days=4)]
-df=df[data[u'更新日期']>datetime.strptime('2018-06-11', "%Y-%m-%d")]
+df=df[df[u'更新日期']>datetime.strptime('2018-06-11', "%Y-%m-%d")]
 #print(data_p7d)
 #data_p7d.columns
 #  不好用 data_p7d[u'运维完成部署时间'].astype('datetime')
@@ -24,11 +25,60 @@ df=df[data[u'更新日期']>datetime.strptime('2018-06-11', "%Y-%m-%d")]
 #data_p7d[U"发布状态"] = data_p7d[U"发布状态"].astype("category")
 #print(data_p7d[data_p7d[u'发布类型']==u'PIR-紧急需求'])
 
-pd.pivot_table(data_p7d,index=[u'发布类型'],values=[u'数量'],aggfunc=[np.sum])  # demo
+pd.pivot_table(df,index=[u'发布类型'],values=[u'数量'],aggfunc=[np.sum])  # demo
 #print(data[u'更新日期'].unique())
 #data.describe()
 #data_p7d=data[data['更新日期']>'2018/06/15']
 #print(data_p7d)
 #print(data_p7d.groupby([u'业务线',u'发布状态']).count())
 #pt=pd.crosstab(data_p7d[u'业务线'], data_p7d[u'发布状态'])
-#print(pt)
+#print(pt)'-----')
+
+#print(data.tail(3))       #取最近3天的数据
+#data.info()
+
+#data[U'更新日期']
+print('-------')
+df[u'更新日期'] = pd.to_datetime(df[u'更新日期'], format='%Y/%m/%d')
+df[u'数量']=1     # 添加一列数量的字段，用于统计发布的数量
+#data.dtypes    # 查询数据类型
+#data[data[u'更新日期']>datetime.now()- timedelta(days=4)]             #只获取最近3天的数据
+df=df[df[u'更新日期']>datetime.strptime('2018-06-11', "%Y-%m-%d")]   #只获取6/11以后的数据
+#print(df)
+#data_p7d.columns
+#  不好用 df[u'运维完成部署时间'].astype('datetime')
+
+#df[U"发布状态"] = data_p7d[U"发布状态"].astype("category")
+#print(df[data_p7d[u'发布类型']==u'PIR-紧急需求'])
+
+#df[u'发布类型'].replace(u'PIR-紧急需求',u'PIR_紧急需求')
+#print(df[df[u'发布类型']==u'PIR-紧急需求'])   
+#  不起作用  df[u'发布类型'].replace(u'PIR-紧急需求',u'PIR_紧急需求')  # 数据替换
+df.loc[df[u'发布类型']==u'PIR-紧急需求',u'发布类型']=u'PIR_紧急需求'  # 数据替换
+#print(df[df[u'发布类型']==u'PIR-紧急需求'])
+
+#发布类型汇总
+a1=pd.pivot_table(df,index=[u'发布类型'],values=[u'数量'],aggfunc=[np.sum])  # demo
+print(a1)
+a2=pd.DataFrame({'发布类型':a1.index,'num':a1.iloc[:,0]})
+print(a2)
+a3=a2.sort_values(by='num',ascending=False)
+a3['占比']=(a3['num']/sum(a3['num']))
+print(a3)
+
+# 技术方验证状态汇总
+a4=pd.pivot_table(df,index=[u'技术方验证状态'],values=[u'数量'],aggfunc=[np.sum])  # demo
+print(a4)
+a5=pd.DataFrame({'技术方验证状态':a4.index,'num':a4.iloc[:,0]})
+print(a5)
+a6=a5.sort_values(by='num',ascending=False)
+a6['占比']=(a6['num']/sum(a3['num']))
+print(a6)
+print('-----')
+print(a6.columns)
+
+# 业务方验证状态汇总
+
+# 待添加代码
+
+
